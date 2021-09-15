@@ -56,19 +56,19 @@ void	ft_usleep(useconds_t time)
 		usleep(50);
 }
 
-// int	destroy_mutex_forks(t_data *data)
-// {
-// 	int	i;
+int	destroy_mutex_forks(t_data *data)
+{
+	int	i;
 
-// 	i = 0;
-// 	while (i < data->number_of_philosophers)
-// 	{
-// 		pthread_mutex_destroy(data->forks[i]);
-// 		free(data->forks[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_mutex_destroy(data->forks[i]);
+		free(data->forks[i]);
+		i++;
+	}
+	return (0);
+}
 
 void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 {
@@ -82,10 +82,10 @@ void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 	// }
 	// pthread_mutex_destroy(philosophers->left_fork);
 	// pthread_mutex_destroy(philosophers->right_fork);
-	// destroy_mutex_forks(data);
+	destroy_mutex_forks(data);
 	pthread_mutex_destroy(&data->print_message);
 	pthread_mutex_destroy(&data->death);
-	// free(data->forks);
+	free(data->forks);
 	free(philosophers);
 	free(threads);
 }

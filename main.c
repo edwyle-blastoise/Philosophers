@@ -39,38 +39,38 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 {
 	int	i;
 
-	// i = 0;
-	// data->forks = malloc(sizeof(pthread_mutex_t *) * data->number_of_philosophers);
-	// if (!data->forks)
-	// 	return (1);
-	// while (i < data->number_of_philosophers)
-	// {
-	// 	data->forks[i] = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-	// 	if (!data->forks[i])
-	// 		return (1);
-	// 	pthread_mutex_init(data->forks[i], NULL);
-	// 	i++;
-	// }
+	i = 0;
+	data->forks = malloc(sizeof(pthread_mutex_t *) * data->number_of_philosophers);
+	if (!data->forks)
+		return (1);
+	while (i < data->number_of_philosophers)
+	{
+		data->forks[i] = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+		if (!data->forks[i])
+			return (1);
+		pthread_mutex_init(data->forks[i], NULL);
+		i++;
+	}
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
 		philosophers[i].id = i + 1;
 		philosophers[i].data = data;
-		pthread_mutex_init(&philosophers[i].left_fork, NULL);
-		// if (philosophers[i].id % 2 == 0)
-		// {
-		// 	philosophers[i].left_fork = data->forks[i];
-		// 	philosophers[i].right_fork = data->forks[i + 1] ;
-		// }
-		// else
-		// {
-		// 	philosophers[i].left_fork = data->forks[i + 1];
-		// 	philosophers[i].right_fork = data->forks[i];
-		// }
-		if (philosophers[i].id == 1)
-			philosophers[i].right_fork = &philosophers[data->number_of_philosophers].left_fork;
+		// pthread_mutex_init(&philosophers[i].left_fork, NULL);
+		if (philosophers[i].id % 2 == 0)
+		{
+			philosophers[i].left_fork = data->forks[i];
+			philosophers[i].right_fork = data->forks[i + 1] ;
+		}
 		else
-			philosophers[i].right_fork = &philosophers[i - 1].left_fork;
+		{
+			philosophers[i].left_fork = data->forks[i + 1];
+			philosophers[i].right_fork = data->forks[i];
+		}
+		// if (philosophers[i].id == 1)
+		// 	philosophers[i].right_fork = &philosophers[data->number_of_philosophers].left_fork;
+		// else
+		// 	philosophers[i].right_fork = &philosophers[i - 1].left_fork;
 		philosophers[i].times_of_eating = 0;
 		i++;
 	}

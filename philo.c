@@ -29,7 +29,7 @@ void	print_status(t_philosopher *philosopher, int status)
 
 void	philo_doings(t_philosopher *philosopher)
 {
-	pthread_mutex_lock(&philosopher->left_fork);
+	pthread_mutex_lock(philosopher->left_fork);
 	print_status(philosopher, 2);
 	pthread_mutex_lock(philosopher->right_fork);
 	print_status(philosopher, 3);
@@ -52,7 +52,7 @@ void	philo_doings(t_philosopher *philosopher)
 	}
 	pthread_mutex_unlock(philosopher->right_fork);
 	print_status(philosopher, 7);
-	pthread_mutex_unlock(&philosopher->left_fork);
+	pthread_mutex_unlock(philosopher->left_fork);
 	print_status(philosopher, 8);
 
 	print_status(philosopher, 5);

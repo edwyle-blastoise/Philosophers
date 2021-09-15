@@ -17,14 +17,14 @@ typedef struct	s_data {
 	int			full_philo;
 	pthread_mutex_t		print_message;
 	pthread_mutex_t		death;
-	// pthread_mutex_t		**forks;
+	pthread_mutex_t		**forks;
 	int				flag_death;
 }				t_data;
 
 typedef struct		s_philosopher {
 	t_data			*data;
 	int				id;
-	pthread_mutex_t	left_fork;
+	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	int				times_of_eating;
 	unsigned long	start_philo;
