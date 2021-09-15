@@ -2,7 +2,7 @@
 
 unsigned long long	get_time(void)
 {
-	struct timeval	current_time;
+	struct timeval		current_time;
 	unsigned long long	sec;
 	unsigned long long	msec;
 
@@ -12,19 +12,11 @@ unsigned long long	get_time(void)
 	return (sec + msec);
 }
 
-unsigned long long	gettime(void)
-{
-	struct timeval	t;
-
-	gettimeofday(&t, NULL);
-	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
-}
-
 int	ft_atoi(char *str)
 {
-	int i;
-	int result;
-	int sign;
+	int	i;
+	int	result;
+	int	sign;
 
 	i = 0;
 	result = 0;
@@ -53,14 +45,13 @@ int	ft_isdigit(int c)
 		return (0);
 }
 
-
 void	ft_usleep(useconds_t time)
 {
-	unsigned long start;
+	unsigned long	start;
 
 	start = get_time();
 	while ((get_time() - start) < time)
-		usleep(50);
+		usleep(20);
 }
 
 int	destroy_mutex_forks(t_data *data)
@@ -68,7 +59,7 @@ int	destroy_mutex_forks(t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->number_of_philosophers)
+	while (i < data->num_of_philo)
 	{
 		pthread_mutex_destroy(data->forks[i]);
 		free(data->forks[i]);
@@ -77,12 +68,12 @@ int	destroy_mutex_forks(t_data *data)
 	return (0);
 }
 
-void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
+void	free_all(t_data *data, t_philo *philo, pthread_t *threads)
 {
 	int	i;
 
 	i = 0;
-	while (i < data->number_of_philosophers)
+	while (i < data->num_of_philo)
 	{
 		pthread_detach(threads[i]);
 		i++;
@@ -92,6 +83,6 @@ void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 	destroy_mutex_forks(data);
 	free(data->forks);
 	free(data);
-	free(philosophers);
+	free(philo);
 	free(threads);
 }
