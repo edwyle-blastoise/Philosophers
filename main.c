@@ -1,22 +1,37 @@
 #include "philo.h"
 
-void	check_death(t_data *data, t_philosopher *philosophers)
+void	check1(t_philosopher *philosopher)
+{
+	if((get_time() - philosopher->last_meal) >= philosopher->data->time_to_die)
+	{
+		philosopher->data->flag_death = 1;
+		print_status(philosopher, 1);
+		pthread_mutex_lock(&philosopher->data->death);
+	}
+}
+
+void	check_philo(t_philosopher *philosophers)
 {
 	int	i;
 
-	i = 0;
-	while (!data->flag_death)
+	while (!philosophers->data->flag_death)
 	{
-		while(i < data->number_of_philosophers)
+		i = 0;
+		while(!philosophers->data->flag_death && i < philosophers->data->number_of_philosophers)
 		{
-			if(data->full_philo == data->number_of_philosophers)
-				print_status(&philosophers[i], 9);
-			else if(get_time() - philosophers[i].last_meal >= (unsigned long)data->time_to_die)
-			{
-				data->flag_death = 1;
-				print_status(&philosophers[i], 1);
-				pthread_mutex_lock(&data->death);
-			}
+			unsigned long curr_time = get_time();
+			// printf("A: %lu B: %lu C: %d\n", curr_time, (&philosophers[i])->last_meal, data->time_to_die);
+			// unsigned long last_m = (&philosophers[i])->last_meal;
+			// printf("diff: %lu\n", (curr_time - last_m));
+			check1(&philosophers[i]);
+			// if((get_time() - philosophers[i].last_meal) > (unsigned long)data->time_to_die)
+			// {
+			// 	data->flag_death = 1;
+			// 	pthread_mutex_lock(&philosophers[i].data->death);
+			// 	print_status(&philosophers[i], 1);
+			// }
+			// else if(data->full_philo == data->number_of_philosophers)
+			// 	print_status(&philosophers[i], 9);
 			i++;
 		}
 	}
@@ -24,15 +39,15 @@ void	check_death(t_data *data, t_philosopher *philosophers)
 
 void	init_data(t_data *data)
 {
-	data->number_of_philosophers = 0;
-	data->time_to_die = 0;
-	data->time_to_eat = 0;
-	data->time_to_sleep = 0;
-	data->number_of_times_each_philosopher_must_eat = 0;
-	pthread_mutex_init(&data->print_message, NULL);
-	pthread_mutex_init(&data->death, NULL);
-	data->flag_death = 0;
-	data->full_philo = 0;
+// 	data->number_of_philosophers = 0;
+// 	data->time_to_die = 0;
+// 	data->time_to_eat = 0;
+// 	data->time_to_sleep = 0;
+// 	data->number_of_times_each_philosopher_must_eat = 0;
+// 	pthread_mutex_init(&data->print_message, NULL);
+// 	pthread_mutex_init(&data->death, NULL);
+	// data->flag_death = 0;
+	// data->full_philo = 0;
 }
 
 int	init_philosophers(t_data *data, t_philosopher *philosophers)
@@ -40,6 +55,7 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 	int	i;
 
 	i = 0;
+
 	data->forks = malloc(sizeof(pthread_mutex_t *) * data->number_of_philosophers);
 	if (!data->forks)
 		return (1);
@@ -52,6 +68,8 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 		i++;
 	}
 	i = 0;
+	data->flag_death = 0;
+	data->full_philo = 0;
 	while (i < data->number_of_philosophers)
 	{
 		philosophers[i].id = i + 1;
@@ -60,11 +78,11 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 		if (philosophers[i].id % 2 == 0)
 		{
 			philosophers[i].left_fork = data->forks[i];
-			philosophers[i].right_fork = data->forks[i + 1] ;
+			philosophers[i].right_fork = data->forks[(i + 1) % data->number_of_philosophers];
 		}
 		else
 		{
-			philosophers[i].left_fork = data->forks[i + 1];
+			philosophers[i].left_fork = data->forks[(i + 1) % data->number_of_philosophers];
 			philosophers[i].right_fork = data->forks[i];
 		}
 		// if (philosophers[i].id == 1)
@@ -74,7 +92,7 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 		philosophers[i].times_of_eating = 0;
 		i++;
 	}
-	return(0);
+	return (0);
 }
 
 int		check_args(char *arg, t_data *data)
@@ -104,6 +122,8 @@ void	parse_data(char **argv, t_data *data)
 	data->time_to_sleep = check_args(argv[4], data);
 	if (argv[5])
 		data->number_of_times_each_philosopher_must_eat = check_args(argv[5], data);
+	pthread_mutex_init(&data->print_message, NULL);
+	pthread_mutex_init(&data->death, NULL);
 }
 
 int		main (int argc, char** argv)
@@ -113,7 +133,6 @@ int		main (int argc, char** argv)
 	pthread_t		*threads;
 	int				i;
 
-	i = 0;
 	if (argc < 5 || argc > 6)
 	{
 		printf("Incorrect numbers of parameters - the program needs 4 or 5 parameters.\n");
@@ -126,19 +145,17 @@ int		main (int argc, char** argv)
 	threads = malloc(sizeof(pthread_t) * data->number_of_philosophers);
 	if (!philosophers || !threads)
 		return (1);
-	init_philosophers(data, philosophers);
+	if (init_philosophers(data, philosophers))
+		printf("Error\n");
+	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-		// if (philosophers[i].data->number_of_philosophers > 1)
-		// 	if (philosophers[i].id % 2 == 0)
-		// 		ft_usleep(20);
 		philosophers[i].start_philo = get_time();
 		pthread_create(&threads[i], NULL, life_cycle, &philosophers[i]);
-		pthread_detach(threads[i]);
-		usleep(100);
+		usleep(50);
 		i++;
 	}
-	check_death(data, philosophers);
+	check_philo(philosophers);
 	free_all(data, philosophers, threads);
 	return (0);
 }

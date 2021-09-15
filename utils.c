@@ -1,16 +1,24 @@
 #include "philo.h"
 
 
-unsigned long	get_time(void)
+unsigned long long	get_time(void)
 {
 	struct timeval	current_time;
-	unsigned long	sec;
-	unsigned long	msec;
+	unsigned long long	sec;
+	unsigned long long	msec;
 
 	gettimeofday(&current_time, NULL);
 	sec = current_time.tv_sec * 1000;
 	msec = current_time.tv_usec / 1000;
 	return (sec + msec);
+}
+
+unsigned long long	gettime(void)
+{
+	struct timeval	t;
+
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
 int	ft_atoi(char *str)
@@ -52,7 +60,7 @@ void	ft_usleep(useconds_t time)
 	unsigned long start;
 
 	start = get_time();
-	while (get_time() - start < time)
+	while ((get_time() - start) < time)
 		usleep(50);
 }
 
@@ -72,20 +80,27 @@ int	destroy_mutex_forks(t_data *data)
 
 void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 {
-	// int	i;
+	int	i;
 
-	// i = 0;
-	// while (i < data.number_of_philosophers)
-	// {
-	// 	pthread_detach(threads[i]);
-	// 	i++;
-	// }
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_detach(threads[i]);
+		i++;
+	}
 	// pthread_mutex_destroy(philosophers->left_fork);
 	// pthread_mutex_destroy(philosophers->right_fork);
-	destroy_mutex_forks(data);
-	pthread_mutex_destroy(&data->print_message);
 	pthread_mutex_destroy(&data->death);
+	pthread_mutex_destroy(&data->print_message);
+	destroy_mutex_forks(data);
 	free(data->forks);
+	free(data);
 	free(philosophers);
 	free(threads);
 }
+
+// int main()
+// {
+// 	printf("M: %lu\tA: %llu\n", get_time(), gettime());
+// 	return (0);
+// }
