@@ -1,8 +1,8 @@
 #include "philo.h"
 
-void	check1(t_philosopher *philosopher)
+void	check_death(t_philosopher *philosopher)
 {
-	if((get_time() - philosopher->last_meal) >= philosopher->data->time_to_die)
+	if((get_time() - philosopher->last_meal) > philosopher->data->time_to_die)
 	{
 		philosopher->data->flag_death = 1;
 		print_status(philosopher, 1);
@@ -19,35 +19,10 @@ void	check_philo(t_philosopher *philosophers)
 		i = 0;
 		while(!philosophers->data->flag_death && i < philosophers->data->number_of_philosophers)
 		{
-			unsigned long curr_time = get_time();
-			// printf("A: %lu B: %lu C: %d\n", curr_time, (&philosophers[i])->last_meal, data->time_to_die);
-			// unsigned long last_m = (&philosophers[i])->last_meal;
-			// printf("diff: %lu\n", (curr_time - last_m));
-			check1(&philosophers[i]);
-			// if((get_time() - philosophers[i].last_meal) > (unsigned long)data->time_to_die)
-			// {
-			// 	data->flag_death = 1;
-			// 	pthread_mutex_lock(&philosophers[i].data->death);
-			// 	print_status(&philosophers[i], 1);
-			// }
-			// else if(data->full_philo == data->number_of_philosophers)
-			// 	print_status(&philosophers[i], 9);
+			check_death(&philosophers[i]);
 			i++;
 		}
 	}
-}
-
-void	init_data(t_data *data)
-{
-// 	data->number_of_philosophers = 0;
-// 	data->time_to_die = 0;
-// 	data->time_to_eat = 0;
-// 	data->time_to_sleep = 0;
-// 	data->number_of_times_each_philosopher_must_eat = 0;
-// 	pthread_mutex_init(&data->print_message, NULL);
-// 	pthread_mutex_init(&data->death, NULL);
-	// data->flag_death = 0;
-	// data->full_philo = 0;
 }
 
 int	init_philosophers(t_data *data, t_philosopher *philosophers)
@@ -74,7 +49,6 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 	{
 		philosophers[i].id = i + 1;
 		philosophers[i].data = data;
-		// pthread_mutex_init(&philosophers[i].left_fork, NULL);
 		if (philosophers[i].id % 2 == 0)
 		{
 			philosophers[i].left_fork = data->forks[i];
@@ -85,10 +59,6 @@ int	init_philosophers(t_data *data, t_philosopher *philosophers)
 			philosophers[i].left_fork = data->forks[(i + 1) % data->number_of_philosophers];
 			philosophers[i].right_fork = data->forks[i];
 		}
-		// if (philosophers[i].id == 1)
-		// 	philosophers[i].right_fork = &philosophers[data->number_of_philosophers].left_fork;
-		// else
-		// 	philosophers[i].right_fork = &philosophers[i - 1].left_fork;
 		philosophers[i].times_of_eating = 0;
 		i++;
 	}
@@ -139,7 +109,6 @@ int		main (int argc, char** argv)
 		return (1);
 	}
 	data = malloc(sizeof(t_data));
-	init_data(data);
 	parse_data(argv, data);
 	philosophers = malloc(sizeof(t_philosopher) * data->number_of_philosophers);
 	threads = malloc(sizeof(pthread_t) * data->number_of_philosophers);

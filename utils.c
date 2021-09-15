@@ -1,6 +1,5 @@
 #include "philo.h"
 
-
 unsigned long long	get_time(void)
 {
 	struct timeval	current_time;
@@ -88,8 +87,6 @@ void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 		pthread_detach(threads[i]);
 		i++;
 	}
-	// pthread_mutex_destroy(philosophers->left_fork);
-	// pthread_mutex_destroy(philosophers->right_fork);
 	pthread_mutex_destroy(&data->death);
 	pthread_mutex_destroy(&data->print_message);
 	destroy_mutex_forks(data);
@@ -98,9 +95,3 @@ void	free_all(t_data *data, t_philosopher	*philosophers, pthread_t *threads)
 	free(philosophers);
 	free(threads);
 }
-
-// int main()
-// {
-// 	printf("M: %lu\tA: %llu\n", get_time(), gettime());
-// 	return (0);
-// }
