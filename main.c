@@ -84,12 +84,19 @@ int	parse_data(int argc, char **argv, t_data *data)
 		printf("Incorrect numbers of parameters - need 4 or 5 parameters.\n");
 		return (1);
 	}
-	data->num_of_philo = check_args(argv[1], data);
-	data->time_to_die = check_args(argv[2], data);
-	data->time_to_eat = check_args(argv[3], data);
-	data->time_to_sleep = check_args(argv[4], data);
+	data->num_of_philo = check_args(argv[1]);
+	data->time_to_die = check_args(argv[2]);
+	data->time_to_eat = check_args(argv[3]);
+	data->time_to_sleep = check_args(argv[4]);
+	if (data->num_of_philo < 1 || data->time_to_die < 1 \
+	|| data->time_to_eat < 1 || data->time_to_sleep < 1)
+		return (1);
 	if (argv[5])
-		data->must_eat = check_args(argv[5], data);
+	{
+		data->must_eat = check_args(argv[5]);
+		if (data->must_eat < 1)
+			return (1);
+	}
 	pthread_mutex_init(&data->print_message, NULL);
 	pthread_mutex_init(&data->death, NULL);
 	return (0);
@@ -100,25 +107,21 @@ int	main(int argc, char **argv)
 	t_data		*data;
 	t_philo		*philo;
 	pthread_t	*threads;
-	int			i;
 
 	data = malloc(sizeof(t_data));
 	if (parse_data(argc, argv, data))
+	{
+		printf("Incorrect parameters!\n");
+		free(data);
 		return (1);
+	}
 	philo = malloc(sizeof(t_philo) * data->num_of_philo);
 	threads = malloc(sizeof(pthread_t) * data->num_of_philo);
 	if (!philo || !threads)
 		return (1);
 	init_data(data);
 	init_philosophers(data, philo);
-	i = 0;
-	while (i < data->num_of_philo)
-	{
-		philo[i].start_philo = get_time();
-		pthread_create(&threads[i], NULL, life_cycle, &philo[i]);
-		usleep(50);
-		i++;
-	}
+	create_threads(threads, data, philo);
 	check_philo(philo);
 	free_all(data, philo, threads);
 	return (0);

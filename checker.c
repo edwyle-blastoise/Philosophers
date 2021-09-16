@@ -37,7 +37,7 @@ void	check_philo(t_philo *philo)
 	}
 }
 
-int	check_args(char *arg, t_data *data)
+int	check_args(char *arg)
 {
 	int	i;
 
@@ -47,11 +47,7 @@ int	check_args(char *arg, t_data *data)
 		if (ft_isdigit(arg[i]))
 			i++;
 		else
-		{
-			printf("Incorrect parameters - need only positive numbers.\n");
-			free(data);
-			exit(1);
-		}
+			return (0);
 	}
 	return (ft_atoi(arg));
 }

@@ -31,12 +31,6 @@ void	choose_message(t_philo *philo, int status)
 	else if (status == 6)
 		printf("%llu %d is thinking\n", \
 		get_time() - philo->start_philo, philo->id);
-	else if (status == 7)
-		printf("%llu %d put down the right fork\n", \
-		get_time() - philo->start_philo, philo->id);
-	else if (status == 8)
-		printf("%llu %d put down the left fork\n", \
-		get_time() - philo->start_philo, philo->id);
 	else if (status == 9)
 		printf("Each pholosopher ate %d times\n", philo->data->must_eat);
 }
@@ -68,9 +62,7 @@ void	philo_doings(t_philo *philo)
 	}
 	ft_usleep(philo->data->time_to_eat);
 	pthread_mutex_unlock(philo->right_fork);
-	print_status(philo, 7);
 	pthread_mutex_unlock(philo->left_fork);
-	print_status(philo, 8);
 	print_status(philo, 5);
 	ft_usleep(philo->data->time_to_sleep);
 	print_status(philo, 6);
@@ -85,4 +77,18 @@ void	*life_cycle(void *philosopher)
 	while (1)
 		philo_doings(philo);
 	return (NULL);
+}
+
+void	create_threads(pthread_t *threads, t_data *data, t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_of_philo)
+	{
+		philo[i].start_philo = get_time();
+		pthread_create(&threads[i], NULL, life_cycle, &philo[i]);
+		usleep(50);
+		i++;
+	}
 }

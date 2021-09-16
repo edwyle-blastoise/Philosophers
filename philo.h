@@ -42,8 +42,10 @@ typedef struct s_philo {
 	unsigned long long	last_meal;
 }					t_philo;
 
-int					check_args(char *arg, t_data *data);
+int					check_args(char *arg);
 void				check_philo(t_philo *philo);
+void				create_threads(pthread_t *threads, t_data *data, \
+					t_philo *philo);
 void				*life_cycle(void *philosopher);
 int					ft_atoi(char *str);
 int					ft_isdigit(int c);
