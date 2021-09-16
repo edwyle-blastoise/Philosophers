@@ -1,4 +1,4 @@
-SRCS		= main.c philo.c utils.c
+SRCS		= main.c philo.c utils.c checker.c
 
 OBJS		= ${SRCS:.c=.o}
 

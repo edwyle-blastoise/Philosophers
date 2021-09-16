@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eblastoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/16 17:02:08 by eblastoi          #+#    #+#             */
+/*   Updated: 2021/09/16 17:02:10 by eblastoi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -30,6 +42,8 @@ typedef struct s_philo {
 	unsigned long long	last_meal;
 }					t_philo;
 
+int					check_args(char *arg, t_data *data);
+void				check_philo(t_philo *philo);
 void				*life_cycle(void *philosopher);
 int					ft_atoi(char *str);
 int					ft_isdigit(int c);
@@ -37,6 +51,5 @@ unsigned long long	get_time(void);
 void				ft_usleep(useconds_t time);
 void				print_status(t_philo *philo, int status);
 int					destroy_mutex_forks(t_data *data);
-void				free_all(t_data *data, t_philo *philo, pthread_t *threads);
 
 #endif

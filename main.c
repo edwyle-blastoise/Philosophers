@@ -1,28 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eblastoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/16 17:01:14 by eblastoi          #+#    #+#             */
+/*   Updated: 2021/09/16 17:01:19 by eblastoi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	check_death(t_philo *philo)
-{
-	if ((get_time() - philo->last_meal) > philo->data->time_to_die)
-	{
-		philo->data->flag_death = 1;
-		print_status(philo, 1);
-		pthread_mutex_lock(&philo->data->death);
-	}
-}
-
-void	check_philo(t_philo *philo)
+void	free_all(t_data *data, t_philo *philo, pthread_t *threads)
 {
 	int	i;
 
-	while (!philo->data->flag_death)
+	i = 0;
+	while (i < data->num_of_philo)
 	{
-		i = 0;
-		while (!philo->data->flag_death && i < philo->data->num_of_philo)
-		{
-			check_death(&philo[i]);
-			i++;
-		}
+		pthread_detach(threads[i]);
+		i++;
 	}
+	pthread_mutex_destroy(&data->death);
+	pthread_mutex_destroy(&data->print_message);
+	destroy_mutex_forks(data);
+	free(data->forks);
+	free(data);
+	free(philo);
+	free(threads);
 }
 
 int	init_data(t_data *data)
@@ -69,25 +75,6 @@ int	init_philosophers(t_data *data, t_philo *philo)
 		i++;
 	}
 	return (0);
-}
-
-int	check_args(char *arg, t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (arg[i])
-	{
-		if (ft_isdigit(arg[i]))
-			i++;
-		else
-		{
-			printf("Incorrect parameters - need only positive numbers.\n");
-			free(data);
-			exit(1);
-		}
-	}
-	return (ft_atoi(arg));
 }
 
 int	parse_data(int argc, char **argv, t_data *data)

@@ -1,4 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eblastoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/16 17:01:50 by eblastoi          #+#    #+#             */
+/*   Updated: 2021/09/16 17:01:56 by eblastoi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
+
+int	destroy_mutex_forks(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_of_philo)
+	{
+		pthread_mutex_destroy(data->forks[i]);
+		free(data->forks[i]);
+		i++;
+	}
+	return (0);
+}
 
 unsigned long long	get_time(void)
 {
@@ -52,37 +78,4 @@ void	ft_usleep(useconds_t time)
 	start = get_time();
 	while ((get_time() - start) < time)
 		usleep(20);
-}
-
-int	destroy_mutex_forks(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->num_of_philo)
-	{
-		pthread_mutex_destroy(data->forks[i]);
-		free(data->forks[i]);
-		i++;
-	}
-	return (0);
-}
-
-void	free_all(t_data *data, t_philo *philo, pthread_t *threads)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->num_of_philo)
-	{
-		pthread_detach(threads[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&data->death);
-	pthread_mutex_destroy(&data->print_message);
-	destroy_mutex_forks(data);
-	free(data->forks);
-	free(data);
-	free(philo);
-	free(threads);
 }
