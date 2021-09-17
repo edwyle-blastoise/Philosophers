@@ -80,10 +80,7 @@ int	init_philosophers(t_data *data, t_philo *philo)
 int	parse_data(int argc, char **argv, t_data *data)
 {
 	if (argc < 5 || argc > 6)
-	{
-		printf("Incorrect numbers of parameters - need 4 or 5 parameters.\n");
 		return (1);
-	}
 	data->num_of_philo = check_args(argv[1]);
 	data->time_to_die = check_args(argv[2]);
 	data->time_to_eat = check_args(argv[3]);
