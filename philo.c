@@ -32,7 +32,7 @@ void	choose_message(t_philo *philo, int status)
 		printf("%llu %d is thinking\n", \
 		get_time() - philo->start_philo, philo->id);
 	else if (status == 9)
-		printf("Each pholosopher ate %d times\n", philo->data->must_eat);
+		printf("Each philosopher ate %d times\n", philo->data->must_eat);
 }
 
 void	print_status(t_philo *philo, int status)
