@@ -16,22 +16,22 @@ void	choose_message(t_philo *philo, int status)
 {
 	if (status == 1)
 		printf("%lu %d died\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 2)
 		printf("%lu %d take the left fork\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 3)
 		printf("%lu %d take the right fork\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 4)
 		printf("%lu %d is eating\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 5)
 		printf("%lu %d is sleeping\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 6)
 		printf("%lu %d is thinking\n", \
-		get_time() - philo->data->start_philo, philo->id);
+		get_time() - philo->data->start_philo, philo->id + 1);
 	else if (status == 7)
 		printf("Each philosopher ate %d times\n", philo->data->must_eat);
 }

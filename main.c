@@ -45,20 +45,16 @@ t_philo	*init_philos(t_data *data, t_philo *philo)
 	i = 0;
 	while (i < data->num_of_philo)
 	{
-		philo[i].id = i + 1;
+		philo[i].id = i;
 		philo[i].data = data;
 		pthread_mutex_init(&philo[i].left_fork, NULL);
 		pthread_mutex_init(&philo[i].philo_meal, NULL);
-		if (philo[i].id == 1)
-			philo[i].right_fork = &philo[data->num_of_philo].left_fork;
-		else
-		{
-			philo[i].right_fork = &philo[i - 1].left_fork;
-			philo[i].last_meal = get_time();
-			philo[i].times_of_eating = 0;
-		}
+		philo[i].right_fork = &philo[i - 1].left_fork;
+		philo[i].last_meal = get_time();
+		philo[i].times_of_eating = 0;
 		i++;
 	}
+	philo[0].right_fork = &philo[data->num_of_philo].left_fork;
 	if (data->num_of_philo == 1)
 		philo[0].right_fork = &philo[0].left_fork;
 	return (philo);
